@@ -174,7 +174,7 @@ namespace ftc_local_planner
         auto new_planner_state = update_planner_state();
         if (new_planner_state != current_state)
         {
-            ROS_INFO_STREAM("FTCLocalPlannerROS: Switching to state " << new_planner_state);
+            ROS_INFO_STREAM("FTCLocalPlannerROS: Switching to state " << stateToString(new_planner_state));
             state_entered_time = ros::Time::now();
             current_state = new_planner_state;
         }

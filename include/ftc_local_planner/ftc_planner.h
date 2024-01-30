@@ -127,6 +127,23 @@ namespace ftc_local_planner
          */
         void debugObstacle(visualization_msgs::Marker &obstacle_points, double x, double y, unsigned char cost, int maxIDs);
 
+        std::string stateToString(uint32_t state) {
+            switch (state) {
+                case PRE_ROTATE:
+                    return "PRE_ROTATE";
+                case FOLLOWING:
+                    return "FOLLOWING";
+                case WAITING_FOR_GOAL_APPROACH:
+                    return "WAITING_FOR_GOAL_APPROACH";
+                case POST_ROTATE:
+                    return "POST_ROTATE";
+                case FINISHED:
+                    return "FINISHED";
+                default:
+                    return "UNKNOWN";
+            }
+        }
+
         double time_in_current_state()
         {
             return (ros::Time::now() - state_entered_time).toSec();

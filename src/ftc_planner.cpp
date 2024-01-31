@@ -196,7 +196,7 @@ namespace ftc_local_planner
             cmd_vel.twist.angular.z = 0;
             return RET_COLLISION;
         }
-        ROS_INFO_STREAM("FTCLocalPlannerROS: Calculated vel_cmd " << cmd_vel.twist.linear.x << ", " << cmd_vel.twist.angular.z);
+        //ROS_INFO_STREAM("FTCLocalPlannerROS: Calculated vel_cmd " << cmd_vel.twist.linear.x << ", " << cmd_vel.twist.angular.z);
 
         return RET_SUCCESS;
     }

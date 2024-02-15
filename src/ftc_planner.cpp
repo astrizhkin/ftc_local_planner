@@ -414,12 +414,19 @@ namespace ftc_local_planner
             viz.pose = tf2::toMsg(current_control_point);
             global_point_pub.publish(viz);
         }
-        auto map_to_base = tf_buffer->lookupTransform("base_link", "map", ros::Time(), ros::Duration(1.0));
+        geometry_msgs::TransformStamped map_to_base = tf_buffer->lookupTransform("base_link", "map", ros::Time(), ros::Duration(1.0));
         tf2::doTransform(current_control_point, local_control_point, map_to_base);
 
         lat_error = local_control_point.translation().y();
         lon_error = local_control_point.translation().x();
         angle_error = local_control_point.rotation().eulerAngles(0, 1, 2).z();
+
+        tf2::Quaternion q;
+        tf2::fromMsg(map_to_base.transform.rotation,q);
+        tf2::Matrix3x3 m(q);
+        double r,p,y;
+        m.getRPY(r,p,y);
+        ROS_INFO_STREAM("FTCLocalPlannerROS: Angular err: EA " << angle_error << " TF2 " << y);
     }
 
     void FTCPlanner::calculate_velocity_commands(double dt, geometry_msgs::TwistStamped &cmd_vel)

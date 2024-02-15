@@ -420,13 +420,6 @@ namespace ftc_local_planner
         lat_error = local_control_point.translation().y();
         lon_error = local_control_point.translation().x();
         angle_error = local_control_point.rotation().eulerAngles(0, 1, 2).z();
-
-        tf2::Quaternion q;
-        tf2::fromMsg(map_to_base.transform.rotation,q);
-        tf2::Matrix3x3 m(q);
-        double r,p,y;
-        m.getRPY(r,p,y);
-        ROS_INFO_STREAM("FTCLocalPlannerROS: Angular err: EA " << angle_error << " TF2 " << y);
     }
 
     void FTCPlanner::calculate_velocity_commands(double dt, geometry_msgs::TwistStamped &cmd_vel)

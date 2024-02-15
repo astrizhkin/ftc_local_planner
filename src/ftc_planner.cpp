@@ -415,6 +415,17 @@ namespace ftc_local_planner
             global_point_pub.publish(viz);
         }
         geometry_msgs::TransformStamped map_to_base = tf_buffer->lookupTransform("base_link", "map", ros::Time(), ros::Duration(1.0));
+        //start quick and dirty fix for positive/negative roll problem
+        tf2::Transform t;
+        tf2::fromMsg(map_to_base.transform,t);
+        tf2::Matrix3x3 m = t.getBasis();
+        double roll,pitch,yaw;
+        m.getRPY(roll,pitch,yaw);
+        m.setRPY(0,0,yaw);
+        t.setBasis(m);
+        map_to_base.transform = tf2::toMsg(t);
+        //end fix
+
         tf2::doTransform(current_control_point, local_control_point, map_to_base);
 
         lat_error = local_control_point.translation().y();

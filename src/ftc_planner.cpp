@@ -482,7 +482,7 @@ namespace ftc_local_planner
 
         // allow linear movement only if in following state
 
-        if (current_state == FOLLOWING)
+        if (current_state == FOLLOWING || current_state == WAITING_FOR_GOAL_APPROACH)
         {
             double lin_speed = lon_error * config.kp_lon + i_lon_error * config.ki_lon + d_lon * config.kd_lon;
             if (lin_speed < 0 && config.forward_only)
@@ -512,7 +512,7 @@ namespace ftc_local_planner
             cmd_vel.twist.linear.x = 0.0;
         }
 
-        if (current_state == FOLLOWING)
+        if (current_state == FOLLOWING || current_state == WAITING_FOR_GOAL_APPROACH)
         {
 
             double ang_speed = angle_error * config.kp_ang + i_angle_error * config.ki_ang + d_angle * config.kd_ang +

@@ -436,8 +436,7 @@ namespace ftc_local_planner
     void FTCPlanner::calculate_velocity_commands(double dt, geometry_msgs::TwistStamped &cmd_vel)
     {
         // check, if we're completely done
-        if (current_state == FINISHED || is_crashed)
-        {
+        if (current_state == FINISHED || is_crashed) {
             cmd_vel.twist.linear.x = 0;
             cmd_vel.twist.angular.z = 0;
             return;
@@ -447,28 +446,21 @@ namespace ftc_local_planner
         i_lat_error += lat_error * dt;
         i_angle_error += angle_error * dt;
 
-        if (i_lon_error > config.ki_lon_max)
-        {
+        if (i_lon_error > config.ki_lon_max) {
             i_lon_error = config.ki_lon_max;
-        }
-        else if (i_lon_error < -config.ki_lon_max)
-        {
+        } else if (i_lon_error < -config.ki_lon_max) {
             i_lon_error = -config.ki_lon_max;
-        }
-        if (i_lat_error > config.ki_lat_max)
-        {
+        } 
+        
+        if (i_lat_error > config.ki_lat_max) {
             i_lat_error = config.ki_lat_max;
-        }
-        else if (i_lat_error < -config.ki_lat_max)
-        {
+        } else if (i_lat_error < -config.ki_lat_max) {
             i_lat_error = -config.ki_lat_max;
         }
-        if (i_angle_error > config.ki_ang_max)
-        {
+
+        if (i_angle_error > config.ki_ang_max) {
             i_angle_error = config.ki_ang_max;
-        }
-        else if (i_angle_error < -config.ki_ang_max)
-        {
+        } else if (i_angle_error < -config.ki_ang_max) {
             i_angle_error = -config.ki_ang_max;
         }
 
@@ -482,62 +474,43 @@ namespace ftc_local_planner
 
         // allow linear movement only if in following state
 
-        if (current_state == FOLLOWING || current_state == WAITING_FOR_GOAL_APPROACH)
-        {
+        if (current_state == FOLLOWING || current_state == WAITING_FOR_GOAL_APPROACH) {
             double lin_speed = lon_error * config.kp_lon + i_lon_error * config.ki_lon + d_lon * config.kd_lon;
-            if (lin_speed < 0 && config.forward_only)
-            {
+            if (lin_speed < 0 && config.forward_only) {
                 lin_speed = 0;
-            }
-            else
-            {
-                if (lin_speed > config.max_cmd_vel_speed)
-                {
+            } else {
+                if (lin_speed > config.max_cmd_vel_speed) {
                     lin_speed = config.max_cmd_vel_speed;
                 }
-                else if (lin_speed < -config.max_cmd_vel_speed)
-                {
+                else if (lin_speed < -config.max_cmd_vel_speed) {
                     lin_speed = -config.max_cmd_vel_speed;
                 }
 
-                if (lin_speed < 0)
-                {
+                if (lin_speed < 0) {
                     lat_error *= -1.0;
                 }
             }
             cmd_vel.twist.linear.x = lin_speed;
-        }
-        else
-        {
+        } else {
             cmd_vel.twist.linear.x = 0.0;
         }
 
-        if (current_state == FOLLOWING || current_state == WAITING_FOR_GOAL_APPROACH)
-        {
-
+        if (current_state == FOLLOWING || current_state == WAITING_FOR_GOAL_APPROACH) {
             double ang_speed = angle_error * config.kp_ang + i_angle_error * config.ki_ang + d_angle * config.kd_ang +
-                               lat_error * config.kp_lat + i_lat_error * config.ki_lat + d_lat * config.kd_lat;
+                               lat_error * config.kp_lat   + i_lat_error * config.ki_lat   + d_lat * config.kd_lat;
 
-            if (ang_speed > config.max_cmd_vel_ang)
-            {
+            if (ang_speed > config.max_cmd_vel_ang) {
                 ang_speed = config.max_cmd_vel_ang;
-            }
-            else if (ang_speed < -config.max_cmd_vel_ang)
-            {
+            } else if (ang_speed < -config.max_cmd_vel_ang) {
                 ang_speed = -config.max_cmd_vel_ang;
             }
 
             cmd_vel.twist.angular.z = ang_speed;
-        }
-        else
-        {
+        } else {
             double ang_speed = angle_error * config.kp_ang + i_angle_error * config.ki_ang + d_angle * config.kd_ang;
-            if (ang_speed > config.max_cmd_vel_ang)
-            {
+            if (ang_speed > config.max_cmd_vel_ang) {
                 ang_speed = config.max_cmd_vel_ang;
-            }
-            else if (ang_speed < -config.max_cmd_vel_ang)
-            {
+            } else if (ang_speed < -config.max_cmd_vel_ang) {
                 ang_speed = -config.max_cmd_vel_ang;
             }
 
@@ -545,15 +518,13 @@ namespace ftc_local_planner
 
             // check if robot oscillates
             bool is_oscillating = checkOscillation(cmd_vel);
-            if (is_oscillating)
-            {
+            if (is_oscillating) {
                 ang_speed = config.max_cmd_vel_ang;
                 cmd_vel.twist.angular.z = ang_speed;
             }
         }
 
-        if (config.debug_pid)
-        {
+        if (config.debug_pid) {
             ftc_local_planner::PID debugPidMsg;
             debugPidMsg.kp_lon_set = lon_error;
 
